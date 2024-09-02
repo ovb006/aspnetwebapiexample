@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+ sql-server:
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: 'testInstancePassword'
+    ports:
+      - 1433:1433
+
+ examplewebapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    ports:
+      - "8080"
