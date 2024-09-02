@@ -48,7 +48,9 @@ namespace ExampleWebApi.Data
             while (currentEmployee?.Manager != null && !managers.Contains(currentEmployee.Manager))
             {
                 managers.Add(currentEmployee.Manager);
-                currentEmployee = currentEmployee.Manager;
+                currentEmployee = Employees
+                                    .Include(p => p.Manager)
+                                    .FirstOrDefault(q => q.EmployeeNumber == currentEmployee.ManagerEmployeeNumber && q.CompanyId == companyId); 
             }
             return managers;
         }
