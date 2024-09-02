@@ -1,6 +1,6 @@
 ﻿using ExampleWebApi.Data.Models;
 
-namespace ExampleWebApi.Models.DTO
+namespace ExampleWebApi.Common.Models.DTO
 {
     public class CompanyHeader
     {

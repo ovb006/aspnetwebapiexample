@@ -1,4 +1,4 @@
-﻿namespace ExampleWebApi.Models.DTO
+﻿namespace ExampleWebApi.Common.Models.DTO
 {
     //Why did I not take the lazy way out and use the public DTOs as my data model?
     //Two reasons - 1 it's inefficient to structure the data that way, it's overly normalized

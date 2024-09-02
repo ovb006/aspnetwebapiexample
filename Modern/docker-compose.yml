@@ -6,3 +6,10 @@ services:
     build:
       context: ExampleWebApi
       dockerfile: Dockerfile
+
+  usingcontrollers:
+    image: ${DOCKER_REGISTRY-}usingcontrollers
+    build:
+      context: .
+      dockerfile: UsingControllers/Dockerfile
+

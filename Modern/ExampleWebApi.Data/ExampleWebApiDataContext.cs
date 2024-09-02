@@ -43,7 +43,8 @@ namespace ExampleWebApi.Data
                                   .Include(p => p.Manager)
                                   .FirstOrDefault(q => q.EmployeeNumber == employeeNumber && q.CompanyId == companyId);
 
-            while (currentEmployee?.Manager != null)
+            //Avoiding infinite loops with the second clause here
+            while (currentEmployee?.Manager != null && !managers.Contains(currentEmployee.Manager))
             {
                 managers.Add(currentEmployee.Manager);
                 currentEmployee = currentEmployee.Manager;

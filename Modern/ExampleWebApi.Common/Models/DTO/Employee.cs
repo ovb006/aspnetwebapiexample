@@ -1,4 +1,4 @@
-﻿namespace ExampleWebApi.Models.DTO
+﻿namespace ExampleWebApi.Common.Models.DTO
 {
     public class Employee : EmployeeHeader
     {
