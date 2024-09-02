@@ -90,10 +90,19 @@ namespace ExampleWebApi.Data.Import
         private BaseResultObject Validation(List<Company> companies, List<Employee> employees)
         {
             var result = new BaseResultObject();
+
             //Validation, no employee can have a manager with a different companyId
             var invalidEmployees = employees.Where(
                 p => p.ManagerEmployeeNumber != null
-                && p.CompanyId != employees.FirstOrDefault(q => q.EmployeeNumber == p.ManagerEmployeeNumber)?.CompanyId);
+                && p.CompanyId != employees.FirstOrDefault(
+                        q => q.EmployeeNumber == p.ManagerEmployeeNumber
+                        && q.CompanyId == p.CompanyId  
+                      )?.CompanyId);
+
+            //Use this one if you want no invalid manager references overall
+            //var invalidEmployees = employees.Where(
+            //    p => p.ManagerEmployeeNumber != null
+            //    && employees.FirstOrDefault(q => q.CompanyId==p.CompanyId && q.EmployeeNumber == p.ManagerEmployeeNumber)==null);
 
             if (!invalidEmployees.Any())
             {
