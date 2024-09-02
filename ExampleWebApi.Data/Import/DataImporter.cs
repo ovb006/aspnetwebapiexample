@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ExampleWebApi.Data.Import
 {
@@ -71,6 +72,7 @@ namespace ExampleWebApi.Data.Import
                     }
                     catch (Exception updateException)
                     {
+                        Log.Error(updateException, "An error occurred: {Message}", updateException.Message);
                         await _context.Database.RollbackTransactionAsync();
                         resultObject.Message = $"Exception while updating database: {updateException.Message}";
                         resultObject.InternalError = true;
@@ -79,6 +81,7 @@ namespace ExampleWebApi.Data.Import
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred: {Message}", ex.Message);
                 resultObject.Message = ex.Message;
             }
             return resultObject;

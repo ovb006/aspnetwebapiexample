@@ -1,5 +1,6 @@
 ﻿using ExampleWebApi.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +41,8 @@ namespace ExampleWebApi.Data
         {
             var managers = new List<Employee>();
             var currentEmployee = Employees
-                                  .Include(p => p.Manager)
-                                  .FirstOrDefault(q => q.EmployeeNumber == employeeNumber && q.CompanyId == companyId);
+                                    .Include(p => p.Manager)
+                                    .FirstOrDefault(q => q.EmployeeNumber == employeeNumber && q.CompanyId == companyId);
 
             //Avoiding infinite loops with the second clause here
             while (currentEmployee?.Manager != null && !managers.Contains(currentEmployee.Manager))
@@ -49,7 +50,6 @@ namespace ExampleWebApi.Data
                 managers.Add(currentEmployee.Manager);
                 currentEmployee = currentEmployee.Manager;
             }
-
             return managers;
         }
 
