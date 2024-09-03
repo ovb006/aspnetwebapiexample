@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsingMinimalApi", "UsingMin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleWebApi.Data", "ExampleWebApi.Data\ExampleWebApi.Data.csproj", "{DA07189E-1E04-488D-9A4B-7F4D91BCD63D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsingControllers", "UsingControllers\UsingControllers.csproj", "{5F6E6284-2A37-4AB8-9102-B7414EA52F0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UsingControllers", "UsingControllers\UsingControllers.csproj", "{5F6E6284-2A37-4AB8-9102-B7414EA52F0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWebApi.Common", "ExampleWebApi.Common\ExampleWebApi.Common.csproj", "{34A4EC6D-8482-4B12-841A-965C0AB1AC78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleWebApi.Common", "ExampleWebApi.Common\ExampleWebApi.Common.csproj", "{34A4EC6D-8482-4B12-841A-965C0AB1AC78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWebApi.Data.Tests", "ExampleWebApi.Data.Tests\ExampleWebApi.Data.Tests.csproj", "{7C222769-E84E-4F2A-9254-7A3A95A49962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{34A4EC6D-8482-4B12-841A-965C0AB1AC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A4EC6D-8482-4B12-841A-965C0AB1AC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A4EC6D-8482-4B12-841A-965C0AB1AC78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C222769-E84E-4F2A-9254-7A3A95A49962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C222769-E84E-4F2A-9254-7A3A95A49962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C222769-E84E-4F2A-9254-7A3A95A49962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C222769-E84E-4F2A-9254-7A3A95A49962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

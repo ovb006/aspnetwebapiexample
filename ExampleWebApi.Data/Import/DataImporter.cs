@@ -46,37 +46,45 @@ namespace ExampleWebApi.Data.Import
                     HireDate = p?.HireDate ?? DateOnly.MinValue,
                     ManagerEmployeeNumber = string.IsNullOrEmpty(p.ManagerEmployeeNumber)? null : p.ManagerEmployeeNumber,
                     CompanyId = p.CompanyId
-                });
+                }).ToList();
 
 
-
-                //I'm assuming you want a transaction here since it's a clear and replace operation and a failure could leave you in an odd state.
-                using (var transaction = _context.Database.BeginTransaction())
+                var validationResult = ImportValidation.Validation(companies, employees);
+                if (validationResult.Success)
                 {
-                    try
-                    {
-                        //Clear Existing rows - I could have also done this with manual sql TRUNCATE, but these collections are small
-                        _context.Companies.RemoveRange(_context.Companies);
-                        _context.Employees.RemoveRange(_context.Employees);
-                        _context.Companies.AddRange(companies);
-                        _context.Employees.AddRange(employees);
 
-                        await _context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT Companies ON;");
-                        await _context.SaveChangesAsync();
-                        await _context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT Companies OFF;");
-                        await _context.Database.CommitTransactionAsync();
-
-                        resultObject.Success = true;
-                        resultObject.CompaniesImported = companies.Count();
-                        resultObject.EmployeesImported = employees.Count();
-                    }
-                    catch (Exception updateException)
+                    //I'm assuming you want a transaction here since it's a clear and replace operation and a failure could leave you in an odd state.
+                    using (var transaction = _context.Database.BeginTransaction())
                     {
-                        Log.Error(updateException, "An error occurred: {Message}", updateException.Message);
-                        await _context.Database.RollbackTransactionAsync();
-                        resultObject.Message = $"Exception while updating database: {updateException.Message}";
-                        resultObject.InternalError = true;
+                        try
+                        {
+                            //Clear Existing rows - I could have also done this with manual sql TRUNCATE, but these collections are small
+                            _context.Companies.RemoveRange(_context.Companies);
+                            _context.Employees.RemoveRange(_context.Employees);
+                            _context.Companies.AddRange(companies);
+                            _context.Employees.AddRange(employees);
+
+                            await _context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT Companies ON;");
+                            await _context.SaveChangesAsync();
+                            await _context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT Companies OFF;");
+                            await _context.Database.CommitTransactionAsync();
+
+                            resultObject.Success = true;
+                            resultObject.CompaniesImported = companies.Count();
+                            resultObject.EmployeesImported = employees.Count();
+                        }
+                        catch (Exception updateException)
+                        {
+                            Log.Error(updateException, "An error occurred: {Message}", updateException.Message);
+                            await _context.Database.RollbackTransactionAsync();
+                            resultObject.Message = $"Exception while updating database: {updateException.Message}";
+                            resultObject.InternalError = true;
+                        }
                     }
+                }
+                else
+                {
+                    resultObject.Message = validationResult.Message;
                 }
             }
             catch (Exception ex)
@@ -85,48 +93,6 @@ namespace ExampleWebApi.Data.Import
                 resultObject.Message = ex.Message;
             }
             return resultObject;
-        }
-
-        private BaseResultObject Validation(List<Company> companies, List<Employee> employees)
-        {
-            var result = new BaseResultObject();
-
-            //Validation, no employee can have a manager with a different companyId
-            var invalidEmployees = employees.Where(
-                p => p.ManagerEmployeeNumber != null
-                && p.CompanyId != employees.FirstOrDefault(
-                        q => q.EmployeeNumber == p.ManagerEmployeeNumber
-                        && q.CompanyId == p.CompanyId  
-                      )?.CompanyId);
-
-            //Use this one if you want no invalid manager references overall
-            //var invalidEmployees = employees.Where(
-            //    p => p.ManagerEmployeeNumber != null
-            //    && employees.FirstOrDefault(q => q.CompanyId==p.CompanyId && q.EmployeeNumber == p.ManagerEmployeeNumber)==null);
-
-            if (!invalidEmployees.Any())
-            {
-                //Validation, no duplicate employee numbers within a single company
-                var duplicateEmployeeNumbers = employees.GroupBy(
-                    p => p.CompanyId).Where(
-                        p => p.GroupBy(
-                                p => p.EmployeeNumber)
-                        .Any(q => q.Count() > 1)).SelectMany(p => p);
-
-                if (!duplicateEmployeeNumbers.Any())
-                {
-                    result.Success = true;
-                } 
-                else
-                {
-                    result.Message = $"Duplicate Employee Numbers : {JsonConvert.SerializeObject(duplicateEmployeeNumbers)}";
-                }
-            }
-            else
-            {
-                result.Message = $"Invalid Managers : {JsonConvert.SerializeObject(invalidEmployees)}";
-            }
-            return result;
         }
 
     }
